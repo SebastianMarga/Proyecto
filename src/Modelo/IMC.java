@@ -4,8 +4,16 @@
  */
 package Modelo;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import java.sql.CallableStatement;
+import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.Date;
+
+
+
 
 /**
  *
@@ -16,14 +24,12 @@ public class IMC implements Operaciones {
     private String idUsuario;
     private double peso;
     private double altura;
-    private Services conexion;
-
+    Services instancia=Services.getInstance();
     public IMC(String idIMC, String idUsuario, double peso, double altura) throws SQLException {
         this.idIMC = idIMC;
         this.idUsuario = idUsuario;
         this.peso = peso;
         this.altura = altura;
-        this.conexion=Services.getInstance();
     }
 
     public String getIdIMC() {
@@ -65,17 +71,66 @@ public class IMC implements Operaciones {
 
     @Override
     public void insertar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String query = "{call sp_InsertarUsuario(?, ?, ?, ?)}";
+        
+        try {
+            CallableStatement stmt = conexion.prepareCall(query);
+            // Establecer los parámetros del procedimiento
+        stmt.setString(1, idIMC);
+        stmt.setString(2, idUsuario);
+        stmt.setDouble(3, peso);
+        stmt.setDouble(4, altura);
+        
+        stmt.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
     @Override
-    public void actualizar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void seleccionar() throws SQLException {
+        /*Connection conexion = instancia.getConnection();
+        String sql = "{call sp_ConsultarUsuarios}";
+        try{
+            CallableStatement stmt =conexion.prepareCall(sql);
+            
+            // Asignar parámetro de entrada (ID del usuario a seleccionar)
+        stmt.setString(1, idUsuario);
+
+        // Ejecutar el procedimiento
+         rs = stmt.executeQuery();
+
+        // Procesar los resultados
+        while (rs.next()) {
+            String nombres = rs.getString("NOMBRES");
+            String apellidos = rs.getString("APELLIDOS");
+            Date fechaNacimiento = rs.getDate("FECHA_NACIMIENTO");
+            String email = rs.getString("EMAIL");
+
+            System.out.println("Usuario: " + nombres + " " + apellidos);
+            System.out.println("Fecha de Nacimiento: " + fechaNacimiento);
+            System.out.println("Email: " + email);}
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        */
     }
 
     @Override
     public void eliminar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String sql = "{call sp_ActualizarUsuario(?)}";
+        try{
+        CallableStatement stmt = conexion.prepareCall(sql);
+        // Asignar parámetro de entrada (ID del usuario a eliminar)
+        stmt.setString(1, idUsuario);
+
+        // Ejecutar el procedimiento
+        stmt.execute();
+        JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

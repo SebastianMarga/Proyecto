@@ -68,7 +68,7 @@ public class Temperatura implements Operaciones{
     }
 
     @Override
-    public void actualizar() throws SQLException {
+    public void seleccionar() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
