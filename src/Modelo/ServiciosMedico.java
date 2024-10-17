@@ -4,7 +4,11 @@
  */
 package Modelo;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,8 +20,9 @@ public class ServiciosMedico implements Operaciones{
     private String tipo_servicio;
     private String fecha_servicio;
     private String estado_servicio;
+    Services instancia=Services.getInstance();
 
-    public ServiciosMedico(String idservicio, String idusuario, String tipo_servicio, String fecha_servicio, String estado_servicio) {
+    public ServiciosMedico(String idservicio, String idusuario, String tipo_servicio, String fecha_servicio, String estado_servicio) throws SQLException{
         this.idservicio = idservicio;
         this.idusuario = idusuario;
         this.tipo_servicio = tipo_servicio;
@@ -67,22 +72,78 @@ public class ServiciosMedico implements Operaciones{
 
     @Override
     public Operaciones clonar() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            return (ServiciosMedico) super.clone(); // Clonación superficial
+        } catch (CloneNotSupportedException e) {
+            // Esto nunca debería ocurrir, ya que estamos implementando Cloneable
+            throw new RuntimeException("Error al clonar el objeto Servicios Medicos", e);
+        }
     }
 
     @Override
     public void insertar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String query = "{call sp_InsertarServicioMedico(?, ?, ?, ?, ?)}";
+        
+        try {
+            CallableStatement stmt = conexion.prepareCall(query);
+            // Establecer los parámetros del procedimiento
+        stmt.setString(1, idservicio);
+        stmt.setString(2, idusuario);
+        stmt.setString(3, tipo_servicio);
+        stmt.setString(4, fecha_servicio);
+        stmt.setString(5, estado_servicio);
+        
+        stmt.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void seleccionar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String sql = "{call sp_ConsultarServiciosMedicos}";
+        try{
+            CallableStatement stmt =conexion.prepareCall(sql);
+            
+            // Asignar parámetro de entrada (ID del usuario a seleccionar)
+        stmt.setString(1, idservicio);
+
+        // Ejecutar el procedimiento
+         ResultSet rs = stmt.executeQuery();
+
+        // Procesar los resultados
+        while (rs.next()) {
+            String idusuario = rs.getString("ID_SERVICIO");
+            String tipo_servicio = rs.getString("TIPO_SERVICIO");
+            String fecha_servicio = rs.getString("FECHA_SERVICIO");
+            String estado_servicio = rs.getString("ESTADO_SERVICIO");
+
+            System.out.println("ID Usuario: " + idusuario);
+            System.out.println("Tipo de servicio: " + tipo_servicio);
+            System.out.println("Fecha de servicio: "+fecha_servicio);
+            System.out.println("Estado de servicio: "+estado_servicio);}
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void eliminar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String sql = "{call sp_EliminarServicioMedico(?)}";
+        try{
+        CallableStatement stmt = conexion.prepareCall(sql);
+        // Asignar parámetro de entrada (ID del usuario a eliminar)
+        stmt.setString(1, idservicio);
+
+        // Ejecutar el procedimiento
+        stmt.execute();
+        JOptionPane.showMessageDialog(null, "Servicios Medicos eliminado correctamente");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
 }

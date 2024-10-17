@@ -4,7 +4,11 @@
  */
 package Modelo;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,8 +20,9 @@ public class HorarioMedico implements Operaciones{
     private String dia;
     private String horainicio;
     private String horafin;
+    Services instancia=Services.getInstance();
 
-    public HorarioMedico(String id_horario, String idmedico, String dia, String horainicio, String horafin) {
+    public HorarioMedico(String id_horario, String idmedico, String dia, String horainicio, String horafin) throws SQLException{
         this.id_horario = id_horario;
         this.idmedico = idmedico;
         this.dia = dia;
@@ -67,22 +72,78 @@ public class HorarioMedico implements Operaciones{
 
     @Override
     public Operaciones clonar() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            return (HorarioMedico) super.clone(); // Clonación superficial
+        } catch (CloneNotSupportedException e) {
+            // Esto nunca debería ocurrir, ya que estamos implementando Cloneable
+            throw new RuntimeException("Error al clonar el objeto Horario Medico", e);
+        }
     }
 
     @Override
     public void insertar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String query = "{call sp_InsertarHorarioMedico(?, ?, ?)}";
+        
+        try {
+            CallableStatement stmt = conexion.prepareCall(query);
+            // Establecer los parámetros del procedimiento
+        stmt.setString(1, id_horario);
+        stmt.setString(2, idmedico);
+        stmt.setString(3, dia);
+        stmt.setString(4, horainicio);
+        stmt.setString(5, horafin);
+        
+        stmt.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void seleccionar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String sql = "{call sp_ConsultarHorariosMedicos}";
+        try{
+            CallableStatement stmt =conexion.prepareCall(sql);
+            
+            // Asignar parámetro de entrada (ID del usuario a seleccionar)
+        stmt.setString(1, id_horario);
+
+        // Ejecutar el procedimiento
+         ResultSet rs = stmt.executeQuery();
+
+        // Procesar los resultados
+        while (rs.next()) {
+            String idmedico = rs.getString("ID_MEDICO");
+            String dia = rs.getString("DIA_SEMANA");
+            String horarioinicio = rs.getString("HORA_INICIO");
+            String horariofin =rs.getString("HORA_FIN");
+
+            System.out.println("ID Usuario: " + idmedico);
+            System.out.println("Tipo de servicio: " + dia);
+            System.out.println("Hora de inicio: "+horarioinicio);
+            System.out.println("Hora de fin: "+horariofin);}
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void eliminar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String sql = "{call sp_EliminarHorarioMedico(?)}";
+        try{
+        CallableStatement stmt = conexion.prepareCall(sql);
+        // Asignar parámetro de entrada (ID del usuario a eliminar)
+        stmt.setString(1, id_horario);
+
+        // Ejecutar el procedimiento
+        stmt.execute();
+        JOptionPane.showMessageDialog(null, "Horario Medico eliminado correctamente");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
 }
