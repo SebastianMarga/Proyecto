@@ -4,7 +4,12 @@
  */
 package Modelo;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -15,14 +20,13 @@ public class Temperatura implements Operaciones{
     private String idUsuario;
     private String fechaHora;
     private double temperatura;
-    private Services conexion;
+    Services instancia=Services.getInstance();
 
     public Temperatura(String idRegistroTemp, String idUsuario, String fechaHora, double temperatura) throws SQLException {
         this.idRegistroTemp = idRegistroTemp;
         this.idUsuario = idUsuario;
         this.fechaHora = fechaHora;
         this.temperatura = temperatura;
-        this.conexion=Services.getInstance();
     }
 
     public String getIdRegistroTemp() {
@@ -59,21 +63,74 @@ public class Temperatura implements Operaciones{
 
     @Override
     public Operaciones clonar() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            return (Temperatura) super.clone(); // Clonación superficial
+        } catch (CloneNotSupportedException e) {
+            // Esto nunca debería ocurrir, ya que estamos implementando Cloneable
+            throw new RuntimeException("Error al clonar el objeto Temperatura", e);
+        }
     }
 
     @Override
     public void insertar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String query = "{call sp_InsertarTemperatura(?, ?, ?, ?)}";
+        
+        try {
+            CallableStatement stmt = conexion.prepareCall(query);
+            // Establecer los parámetros del procedimiento
+        stmt.setString(1, idRegistroTemp);
+        stmt.setString(2, idUsuario);
+        stmt.setString(3, fechaHora);
+        stmt.setDouble(4, temperatura);
+        
+        stmt.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void seleccionar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String sql = "{call sp_ConsultarTemperatura}";
+        try{
+            CallableStatement stmt =conexion.prepareCall(sql);
+            
+            // Asignar parámetro de entrada (ID del usuario a seleccionar)
+        stmt.setString(1, idRegistroTemp);
+
+        // Ejecutar el procedimiento
+         ResultSet rs = stmt.executeQuery();
+
+        // Procesar los resultados
+        while (rs.next()) {
+            String idUsuario = rs.getString("ID_USUARIO");
+            Date fechaHora = rs.getDate("FECHA_HORA");
+            String temperatura = rs.getString("TEMPERATURA");
+
+            System.out.println("Id Usuario: " + idUsuario);
+            System.out.println("Fecha y Hora: " + fechaHora);
+            System.out.println("Temperatura: " + temperatura+"°");}
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void eliminar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String sql = "{call sp_EliminarTemperatura(?)}";
+        try{
+        CallableStatement stmt = conexion.prepareCall(sql);
+        // Asignar parámetro de entrada (ID del usuario a eliminar)
+        stmt.setString(1, idRegistroTemp);
+
+        // Ejecutar el procedimiento
+        stmt.execute();
+        JOptionPane.showMessageDialog(null, "Temperatura eliminada correctamente");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }

@@ -4,7 +4,12 @@
  */
 package Modelo;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -17,8 +22,9 @@ public class SolicitudCita implements Operaciones{
     private String fecha_cita;
     private String estado_cita;
     private String recordatorio;
+    Services instancia=Services.getInstance();
 
-    public SolicitudCita(String id_solicitud, String id_usuario, String fecha_solicitud, String fecha_cita, String estado_cita, String recordatorio) {
+    public SolicitudCita(String id_solicitud, String id_usuario, String fecha_solicitud, String fecha_cita, String estado_cita, String recordatorio) throws SQLException {
         this.id_solicitud = id_solicitud;
         this.id_usuario = id_usuario;
         this.fecha_solicitud = fecha_solicitud;
@@ -77,22 +83,81 @@ public class SolicitudCita implements Operaciones{
 
     @Override
     public Operaciones clonar() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            return (SolicitudCita) super.clone(); // Clonación superficial
+        } catch (CloneNotSupportedException e) {
+            // Esto nunca debería ocurrir, ya que estamos implementando Cloneable
+            throw new RuntimeException("Error al clonar el objeto Solicitud", e);
+        }
     }
 
     @Override
     public void insertar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String query = "{call sp_InsertarSolicitudCita(?, ?, ?, ?, ?, ?)}";
+        
+        try {
+            CallableStatement stmt = conexion.prepareCall(query);
+            // Establecer los parámetros del procedimiento
+        stmt.setString(1, id_solicitud);
+        stmt.setString(2, id_usuario);
+        stmt.setString(3, fecha_solicitud);
+        stmt.setString(4, fecha_cita);
+        stmt.setString(5, estado_cita);
+        stmt.setString(6, recordatorio);
+        
+        stmt.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void seleccionar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String sql = "{call sp_ConsultarHistorialMedico}";
+        try{
+            CallableStatement stmt =conexion.prepareCall(sql);
+            
+            // Asignar parámetro de entrada (ID del usuario a seleccionar)
+        stmt.setString(1, id_solicitud);
+
+        // Ejecutar el procedimiento
+         ResultSet rs = stmt.executeQuery();
+
+        // Procesar los resultados
+        while (rs.next()) {
+            String idUsuario = rs.getString("ID_USUARIO");
+            Date fecha_solicitud = rs.getDate("FECHA_SOLICITUD");
+            Date fecha_cita = rs.getDate("FECHA_CITA");
+            String estado_cita = rs.getString("ESTADO_CITA");
+            String recordatorio = rs.getString("RECORDATORIO_ENVIADO");
+
+            System.out.println("Id Usuario: " + idUsuario);
+            System.out.println("Fecha de solicitud: " + fecha_solicitud);
+            System.out.println("Fecha de la cita: "+fecha_cita);
+            System.out.println("Estado de cita: "+estado_cita);
+            System.out.println("Recordatorio: " + recordatorio);}
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void eliminar() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Connection conexion = instancia.getConnection();
+        String sql = "{call sp_EliminarHistorialMedica(?)}";
+        try{
+        CallableStatement stmt = conexion.prepareCall(sql);
+        // Asignar parámetro de entrada (ID del usuario a eliminar)
+        stmt.setString(1, id_solicitud);
+
+        // Ejecutar el procedimiento
+        stmt.execute();
+        JOptionPane.showMessageDialog(null, "Solicitud Cita eliminado correctamente");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
     

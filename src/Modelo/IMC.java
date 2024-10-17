@@ -66,13 +66,18 @@ public class IMC implements Operaciones {
 
     @Override
     public Operaciones clonar() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            return (IMC) super.clone(); // Clonación superficial
+        } catch (CloneNotSupportedException e) {
+            // Esto nunca debería ocurrir, ya que estamos implementando Cloneable
+            throw new RuntimeException("Error al clonar el objeto IMC", e);
+        }
     }
 
     @Override
     public void insertar() throws SQLException {
         Connection conexion = instancia.getConnection();
-        String query = "{call sp_InsertarUsuario(?, ?, ?, ?)}";
+        String query = "{call sp_InsertarIMC(?, ?, ?, ?)}";
         
         try {
             CallableStatement stmt = conexion.prepareCall(query);
@@ -89,45 +94,44 @@ public class IMC implements Operaciones {
     }
     @Override
     public void seleccionar() throws SQLException {
-        /*Connection conexion = instancia.getConnection();
-        String sql = "{call sp_ConsultarUsuarios}";
+        Connection conexion = instancia.getConnection();
+        String sql = "{call sp_ConsultarIMC}";
         try{
             CallableStatement stmt =conexion.prepareCall(sql);
             
             // Asignar parámetro de entrada (ID del usuario a seleccionar)
-        stmt.setString(1, idUsuario);
+        stmt.setString(1, idIMC);
 
         // Ejecutar el procedimiento
-         rs = stmt.executeQuery();
+        ResultSet rs = stmt.executeQuery();
 
         // Procesar los resultados
         while (rs.next()) {
-            String nombres = rs.getString("NOMBRES");
-            String apellidos = rs.getString("APELLIDOS");
-            Date fechaNacimiento = rs.getDate("FECHA_NACIMIENTO");
-            String email = rs.getString("EMAIL");
+            String idUsuario = rs.getString("ID_USUARIO");
+            Double peso = rs.getDouble("PESO");
+            Double altura = rs.getDouble("ALTURA");
 
-            System.out.println("Usuario: " + nombres + " " + apellidos);
-            System.out.println("Fecha de Nacimiento: " + fechaNacimiento);
-            System.out.println("Email: " + email);}
+            System.out.println("ID USUARIO: " +  idUsuario);
+            System.out.println("Peso: " + peso);
+            System.out.println("Altura: " + altura);}
         }catch(Exception e){
             e.printStackTrace();
         }
-        */
+        
     }
 
     @Override
     public void eliminar() throws SQLException {
         Connection conexion = instancia.getConnection();
-        String sql = "{call sp_ActualizarUsuario(?)}";
+        String sql = "{call sp_EliminarIMC(?)}";
         try{
         CallableStatement stmt = conexion.prepareCall(sql);
         // Asignar parámetro de entrada (ID del usuario a eliminar)
-        stmt.setString(1, idUsuario);
+        stmt.setString(1, idIMC);
 
         // Ejecutar el procedimiento
         stmt.execute();
-        JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente");
+        JOptionPane.showMessageDialog(null, "IMC eliminado correctamente");
         }catch(Exception e){
             e.printStackTrace();
         }
