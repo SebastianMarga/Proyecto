@@ -8,6 +8,7 @@ package abstractFactory;
  *
  * @author SANDRO
  */
-public interface Medico {
-    void atender();
+public interface EspecialidadFactory {
+    Medico crearMedico();
+    Herramienta crearHerramienta();
 }
