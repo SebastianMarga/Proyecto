@@ -19,14 +19,14 @@ public class InfoNutricional implements Operaciones{
     private double carbohidratos;
     private double grasas;
 
-    public InfoNutricional(String id_info, String idusuario, String fecha, double calorias, double proteinas, double carbohidratos, double grasas) {
-        this.id_info = id_info;
-        this.idusuario = idusuario;
-        this.fecha = fecha;
-        this.calorias = calorias;
-        this.proteinas = proteinas;
-        this.carbohidratos = carbohidratos;
-        this.grasas = grasas;
+    public InfoNutricional(InfoNutricionalBuilder builder) {
+        this.id_info = builder.id_info;
+        this.idusuario = builder.idusuario;
+        this.fecha = builder.fecha;
+        this.calorias = builder.calorias;
+        this.proteinas = builder.proteinas;
+        this.carbohidratos = builder.carbohidratos;
+        this.grasas = builder.grasas;
     }
 
     public String getId_info() {
@@ -84,10 +84,55 @@ public class InfoNutricional implements Operaciones{
     public void setGrasas(double grasas) {
         this.grasas = grasas;
     }
-
+    //patron Builder
+    public static class InfoNutricionalBuilder{
+        private String id_info;
+        private String idusuario;
+        private String fecha;
+        private double calorias;
+        private double proteinas;
+        private double carbohidratos;
+        private double grasas;
+        public InfoNutricionalBuilder(String id_info){
+            this.id_info=id_info;
+        }
+        public InfoNutricionalBuilder usuario(String idusuario){
+            this.idusuario=idusuario;
+            return this;
+        }
+        public InfoNutricionalBuilder fecha(String fecha){
+            this.fecha=fecha;
+            return this;
+        }
+        public InfoNutricionalBuilder calorias(double calorias){
+            this.calorias=calorias;
+            return this;
+        }
+        public InfoNutricionalBuilder proteinas(double proteinas){
+            this.proteinas=proteinas;
+            return this;
+        }
+        public InfoNutricionalBuilder carbohidratos(double carbohidratos){
+            this.carbohidratos=carbohidratos;
+            return this;
+        }
+        public InfoNutricionalBuilder grasas(double grasas){
+            this.grasas=grasas;
+            return this;
+        }
+        public InfoNutricional construir(){
+            return new InfoNutricional(this);
+        }
+        
+    }
     @Override
     public Operaciones clonar() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            return (InfoNutricional) super.clone(); // Clonación superficial
+        } catch (CloneNotSupportedException e) {
+            // Esto nunca debería ocurrir, ya que estamos implementando Cloneable
+            throw new RuntimeException("Error al clonar el objeto Info Nutricional", e);
+        }
     }
 
     @Override

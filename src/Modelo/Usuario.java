@@ -68,7 +68,7 @@ public class Usuario implements Operaciones {
         this.email = email;
     }
     
-    
+    //Patron Prototype
     @Override
     public String toString() {
     return "Usuario{id=" + idUsuario + ", nombre=" + nombres + "Apellido "+apellidos+"Fecha de Nacimiento "+fechaNacimiento+"Email "+email;

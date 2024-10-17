@@ -24,13 +24,13 @@ public class SolicitudCita implements Operaciones{
     private String recordatorio;
     Services instancia=Services.getInstance();
 
-    public SolicitudCita(String id_solicitud, String id_usuario, String fecha_solicitud, String fecha_cita, String estado_cita, String recordatorio) throws SQLException {
-        this.id_solicitud = id_solicitud;
-        this.id_usuario = id_usuario;
-        this.fecha_solicitud = fecha_solicitud;
-        this.fecha_cita = fecha_cita;
-        this.estado_cita = estado_cita;
-        this.recordatorio = recordatorio;
+    public SolicitudCita(SolicitudCitasBuilder builder) throws SQLException {
+        this.id_solicitud = builder.id_solicitud;
+        this.id_usuario = builder.id_usuario;
+        this.fecha_solicitud = builder.fecha_solicitud;
+        this.fecha_cita = builder.fecha_cita;
+        this.estado_cita = builder.estado_cita;
+        this.recordatorio = builder.recordatorio;
     }
 
     public String getId_solicitud() {
@@ -80,7 +80,41 @@ public class SolicitudCita implements Operaciones{
     public void setRecordatorio(String recordatorio) {
         this.recordatorio = recordatorio;
     }
-
+    
+    public static class SolicitudCitasBuilder{
+        private String id_solicitud;
+        private String id_usuario;
+        private String fecha_solicitud;
+        private String fecha_cita;
+        private String estado_cita;
+        private String recordatorio;
+        public SolicitudCitasBuilder(String id_solicitud){
+            this.id_solicitud=id_solicitud;
+        }
+        public SolicitudCitasBuilder Usuario(String id_usuario){
+            this.id_usuario=id_usuario;
+            return this;
+        }
+        public SolicitudCitasBuilder Solicitud(String fecha_solicitud){
+            this.fecha_solicitud=fecha_solicitud;
+            return this;
+        }
+        public SolicitudCitasBuilder Fecha(String fecha_cita){
+            this.fecha_cita=fecha_cita;
+            return this;
+        }
+        public SolicitudCitasBuilder Estado(String estado_cita){
+            this.estado_cita=estado_cita;
+            return this;
+        }
+        public SolicitudCitasBuilder Recordatorio(String recordatorio){
+            this.recordatorio=recordatorio;
+            return this;
+        }
+        public SolicitudCita construir() throws SQLException{
+            return new SolicitudCita(this);
+        }
+    }
     @Override
     public Operaciones clonar() {
         try {

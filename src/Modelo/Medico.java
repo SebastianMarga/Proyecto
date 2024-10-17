@@ -25,14 +25,14 @@ public class Medico implements Operaciones{
     private String consultorio;
     Services instancia=Services.getInstance();
 
-    public Medico(String id_medico, String nombre, String apellido, String id_especialidad, String email, String telefono, String consultorio) throws SQLException{
-        this.id_medico = id_medico;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.id_especialidad = id_especialidad;
-        this.email = email;
-        this.telefono = telefono;
-        this.consultorio = consultorio;
+    public Medico(MedicoBuilder builder) throws SQLException{
+        this.id_medico = builder.id_medico;
+        this.nombre = builder.nombre;
+        this.apellido = builder.apellido;
+        this.id_especialidad = builder.id_especialidad;
+        this.email = builder.email;
+        this.telefono = builder.telefono;
+        this.consultorio = builder.consultorio;
     }
 
     public String getId_medico() {
@@ -89,6 +89,47 @@ public class Medico implements Operaciones{
 
     public void setConsultorio(String consultorio) {
         this.consultorio = consultorio;
+    }
+    //Patron Builder
+    public static class MedicoBuilder{
+        private String id_medico;
+        private String nombre;
+        private String apellido;
+        private String id_especialidad;
+        private String email;
+        private String telefono;
+        private String consultorio;
+        
+        public MedicoBuilder(String id_medico){
+            this.id_medico=id_medico;
+        }
+        public MedicoBuilder nombre(String nombre){
+            this.nombre=nombre;
+            return this;
+        }
+        public MedicoBuilder apellido(String apellido){
+            this.apellido=apellido;
+            return this;
+        }
+        public MedicoBuilder especialidad(String id_especialidad){
+            this.id_especialidad=id_especialidad;
+            return this;
+        }
+        public MedicoBuilder email(String email){
+            this.email=email;
+            return this;
+        }
+        public MedicoBuilder telefono(String telefono){
+            this.telefono=telefono;
+            return this;
+        }
+        public MedicoBuilder consultorio(String consultorio){
+            this.consultorio=consultorio;
+            return this;
+        }
+        public Medico construir() throws SQLException{
+            return new Medico(this);
+        }
     }
 
     @Override

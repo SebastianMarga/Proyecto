@@ -26,14 +26,14 @@ public class Historial implements Operaciones{
     Services instancia=Services.getInstance();
 
 
-    public Historial(String idhistorial, String idusuario, String fecha_visita, String tipo_visita, String Resultados, String observaciones, String prox_visita) throws SQLException {
-        this.idhistorial = idhistorial;
-        this.idusuario = idusuario;
-        this.fecha_visita = fecha_visita;
-        this.tipo_visita = tipo_visita;
-        this.Resultados = Resultados;
-        this.observaciones = observaciones;
-        this.prox_visita = prox_visita;
+    public Historial(HistorialBuilder builder) throws SQLException {
+        this.idhistorial = builder.idhistorial;
+        this.idusuario = builder.idusuario;
+        this.fecha_visita = builder.fecha_visita;
+        this.tipo_visita = builder.tipo_visita;
+        this.Resultados = builder.Resultados;
+        this.observaciones = builder.observaciones;
+        this.prox_visita = builder.prox_visita;
     }
 
     public String getIdhistorial() {
@@ -90,6 +90,45 @@ public class Historial implements Operaciones{
 
     public void setProx_visita(String prox_visita) {
         this.prox_visita = prox_visita;
+    }
+    public static class HistorialBuilder{
+        private String idhistorial;
+        private String idusuario;
+        private String fecha_visita;
+        private String tipo_visita;
+        private String Resultados;
+        private String observaciones;
+        private String prox_visita;
+        public HistorialBuilder(String idhistorial){
+            this.idhistorial=idhistorial;
+        }
+        public HistorialBuilder usuario(String idusuario){
+            this.idusuario=idusuario;
+            return this;
+        }
+        public HistorialBuilder fecha(String fecha_visita){
+            this.fecha_visita=fecha_visita;
+            return this;
+        }
+        public HistorialBuilder tipo(String tipo_visita){
+            this.tipo_visita=tipo_visita;
+            return this;
+        }
+        public HistorialBuilder resultado(String Resultados){
+            this.Resultados=Resultados;
+            return this;
+        }
+        public HistorialBuilder observacion(String observaciones){
+            this.observaciones=observaciones;
+            return this;
+        }
+        public HistorialBuilder proxima(String prox_visita){
+            this.prox_visita=prox_visita;
+            return this;
+        }
+        public Historial construir() throws SQLException{
+            return new Historial(this);
+        }
     }
 
     @Override

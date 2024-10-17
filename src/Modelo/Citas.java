@@ -24,14 +24,14 @@ public class Citas implements Operaciones{
     private String estado_cita;
     Services instancia=Services.getInstance();
 
-    public Citas(String id_cita, String id_usuario, String id_medico, String fechacita, String horacita, String motivocita, String estado_cita) throws SQLException {
-        this.id_cita = id_cita;
-        this.id_usuario = id_usuario;
-        this.id_medico = id_medico;
-        this.fechacita = fechacita;
-        this.horacita = horacita;
-        this.motivocita = motivocita;
-        this.estado_cita = estado_cita;
+    public Citas(CitasBuilder builder) throws SQLException {
+        this.id_cita = builder.id_cita;
+        this.id_usuario = builder.id_usuario;
+        this.id_medico = builder.id_medico;
+        this.fechacita = builder.fechacita;
+        this.horacita = builder.horacita;
+        this.motivocita = builder.motivocita;
+        this.estado_cita = builder.estado_cita;
     }
 
     public String getId_cita() {
@@ -88,6 +88,48 @@ public class Citas implements Operaciones{
 
     public void setEstado_cita(String estado_cita) {
         this.estado_cita = estado_cita;
+    }
+    
+    //Ptron Builder
+    public static class CitasBuilder{
+        private String id_cita;
+        private String id_usuario;
+        private String id_medico;
+        private String fechacita;
+        private String horacita;
+        private String motivocita;
+        private String estado_cita;
+    
+       public CitasBuilder(String id_cita){
+           this.id_cita=id_cita;
+       }
+       public CitasBuilder Usuario(String id_usuario){
+           this.id_usuario=id_usuario;
+           return this;
+       }
+       public CitasBuilder Medico(String id_medico){
+           this.id_medico=id_medico;
+           return this;
+       }
+       public CitasBuilder Fecha(String fechacita){
+           this.fechacita=fechacita;
+           return this;
+       }
+       public CitasBuilder Hora(String horacita){
+           this.horacita=horacita;
+           return this;
+       }
+       public CitasBuilder motivo(String motivocita){
+           this.motivocita=motivocita;
+           return this;
+       }
+       public CitasBuilder estado(String estado_cita){
+           this.estado_cita=estado_cita;
+           return this;
+       }
+       public Citas construir() throws SQLException  {
+           return new Citas(this);
+       }
     }
 
     @Override
