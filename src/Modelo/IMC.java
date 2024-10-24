@@ -19,12 +19,24 @@ import java.sql.Date;
  *
  * @author vsmv0
  */
-public class IMC implements Operaciones {
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import java.util.ArrayList;
+import java.util.List;
+
+public class IMC implements IMCComponente {
     private String idIMC;
     private String idUsuario;
     private double peso;
-    private double altura;
-    Services instancia=Services.getInstance();
+    private double altura;  // Asumiendo que esta variable está definida
+    private Services instancia = Services.getInstance();
+    
+    // Lista para contener subcomponentes IMC (si es necesario)
+    private List<IMCComponente> children = new ArrayList<>();
+
     public IMC(String idIMC, String idUsuario, double peso, double altura) throws SQLException {
         this.idIMC = idIMC;
         this.idUsuario = idUsuario;
@@ -32,47 +44,7 @@ public class IMC implements Operaciones {
         this.altura = altura;
     }
 
-    public String getIdIMC() {
-        return idIMC;
-    }
-
-    public void setIdIMC(String idIMC) {
-        this.idIMC = idIMC;
-    }
-
-    public String getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(String idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public double getPeso() {
-        return peso;
-    }
-
-    public void setPeso(double peso) {
-        this.peso = peso;
-    }
-
-    public double getAltura() {
-        return altura;
-    }
-
-    public void setAltura(double altura) {
-        this.altura = altura;
-    }
-
-    @Override
-    public Operaciones clonar() {
-        try {
-            return (IMC) super.clone(); // Clonación superficial
-        } catch (CloneNotSupportedException e) {
-            // Esto nunca debería ocurrir, ya que estamos implementando Cloneable
-            throw new RuntimeException("Error al clonar el objeto IMC", e);
-        }
-    }
+    // Métodos getter y setter...
 
     @Override
     public void insertar() throws SQLException {
@@ -81,60 +53,74 @@ public class IMC implements Operaciones {
         
         try {
             CallableStatement stmt = conexion.prepareCall(query);
-            // Establecer los parámetros del procedimiento
-        stmt.setString(1, idIMC);
-        stmt.setString(2, idUsuario);
-        stmt.setDouble(3, peso);
-        stmt.setDouble(4, altura);
-        
-        stmt.execute();
+            stmt.setString(1, idIMC);
+            stmt.setString(2, idUsuario);
+            stmt.setDouble(3, peso);
+            stmt.setDouble(4, altura);
+            
+            stmt.execute();
+            // Insertar también en hijos, si hay
+            for (IMCComponente child : children) {
+                child.insertar();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     @Override
     public void seleccionar() throws SQLException {
         Connection conexion = instancia.getConnection();
         String sql = "{call sp_ConsultarIMC}";
-        try{
-            CallableStatement stmt =conexion.prepareCall(sql);
+        try {
+            CallableStatement stmt = conexion.prepareCall(sql);
+            stmt.setString(1, idIMC);
+            ResultSet rs = stmt.executeQuery();
             
-            // Asignar parámetro de entrada (ID del usuario a seleccionar)
-        stmt.setString(1, idIMC);
+            while (rs.next()) {
+                String idUsuario = rs.getString("ID_USUARIO");
+                double peso = rs.getDouble("PESO");
+                double altura = rs.getDouble("ALTURA");
 
-        // Ejecutar el procedimiento
-        ResultSet rs = stmt.executeQuery();
-
-        // Procesar los resultados
-        while (rs.next()) {
-            String idUsuario = rs.getString("ID_USUARIO");
-            Double peso = rs.getDouble("PESO");
-            Double altura = rs.getDouble("ALTURA");
-
-            System.out.println("ID USUARIO: " +  idUsuario);
-            System.out.println("Peso: " + peso);
-            System.out.println("Altura: " + altura);}
-        }catch(Exception e){
+                System.out.println("ID USUARIO: " + idUsuario);
+                System.out.println("Peso: " + peso);
+                System.out.println("Altura: " + altura);
+            }
+            // Seleccionar también en hijos, si hay
+            for (IMCComponente child : children) {
+                child.seleccionar();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
     }
 
     @Override
     public void eliminar() throws SQLException {
         Connection conexion = instancia.getConnection();
         String sql = "{call sp_EliminarIMC(?)}";
-        try{
-        CallableStatement stmt = conexion.prepareCall(sql);
-        // Asignar parámetro de entrada (ID del usuario a eliminar)
-        stmt.setString(1, idIMC);
+        try {
+            CallableStatement stmt = conexion.prepareCall(sql);
+            stmt.setString(1, idIMC);
+            stmt.execute();
+            JOptionPane.showMessageDialog(null, "IMC eliminado correctamente");
 
-        // Ejecutar el procedimiento
-        stmt.execute();
-        JOptionPane.showMessageDialog(null, "IMC eliminado correctamente");
-        }catch(Exception e){
+            // Eliminar también en hijos, si hay
+            for (IMCComponente child : children) {
+                child.eliminar();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    // Método para agregar un hijo
+    public void addChild(IMCComponente child) {
+        children.add(child);
+    }
+
+    // Método para remover un hijo
+    public void removeChild(IMCComponente child) {
+        children.remove(child);
+    }
 }
