@@ -8,6 +8,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,9 +19,9 @@ public class Citas implements Operaciones{
     private String id_cita;
     private String id_usuario;
     private String id_medico;
-    private String fechacita;
-    private String horacita;
-    private String motivocita;
+    private String id_clinica;
+    private Date fecha_cita;
+    private String motivo;
     private String estado_cita;
     Services instancia=Services.getInstance();
 
@@ -28,9 +29,9 @@ public class Citas implements Operaciones{
         this.id_cita = builder.id_cita;
         this.id_usuario = builder.id_usuario;
         this.id_medico = builder.id_medico;
-        this.fechacita = builder.fechacita;
-        this.horacita = builder.horacita;
-        this.motivocita = builder.motivocita;
+        this.id_clinica = builder.id_clinica;
+        this.fecha_cita = builder.fecha_cita;
+        this.motivo = builder.motivo;
         this.estado_cita = builder.estado_cita;
     }
 
@@ -58,28 +59,28 @@ public class Citas implements Operaciones{
         this.id_medico = id_medico;
     }
 
-    public String getFechacita() {
-        return fechacita;
+    public String getId_clinica() {
+        return id_clinica;
     }
 
-    public void setFechacita(String fechacita) {
-        this.fechacita = fechacita;
+    public void setId_clinica(String id_clinica) {
+        this.id_clinica = id_clinica;
     }
 
-    public String getHoracita() {
-        return horacita;
+    public Date getFecha_Cita() {
+        return fecha_cita;
     }
 
-    public void setHoracita(String horacita) {
-        this.horacita = horacita;
+    public void setFecha_Cita(Date fecha_cita) {
+        this.fecha_cita = fecha_cita;
     }
 
     public String getMotivocita() {
-        return motivocita;
+        return motivo;
     }
 
     public void setMotivocita(String motivocita) {
-        this.motivocita = motivocita;
+        this.motivo = motivocita;
     }
 
     public String getEstado_cita() {
@@ -95,9 +96,9 @@ public class Citas implements Operaciones{
         private String id_cita;
         private String id_usuario;
         private String id_medico;
-        private String fechacita;
-        private String horacita;
-        private String motivocita;
+        private String id_clinica;
+        private Date fecha_cita;
+        private String motivo;
         private String estado_cita;
     
        public CitasBuilder(String id_cita){
@@ -111,16 +112,16 @@ public class Citas implements Operaciones{
            this.id_medico=id_medico;
            return this;
        }
-       public CitasBuilder Fecha(String fechacita){
-           this.fechacita=fechacita;
+       public CitasBuilder Clinica(String id_clinica){
+           this.id_clinica=id_clinica;
            return this;
        }
-       public CitasBuilder Hora(String horacita){
-           this.horacita=horacita;
+       public CitasBuilder Fecha_cita(Date fecha_cita){
+           this.fecha_cita=fecha_cita;
            return this;
        }
-       public CitasBuilder motivo(String motivocita){
-           this.motivocita=motivocita;
+       public CitasBuilder motivo(String motivo){
+           this.motivo=motivo;
            return this;
        }
        public CitasBuilder estado(String estado_cita){
@@ -153,9 +154,9 @@ public class Citas implements Operaciones{
         stmt.setString(1, id_cita);
         stmt.setString(2, id_usuario);
         stmt.setString(3, id_medico);
-        stmt.setString(4, fechacita);
-        stmt.setString(5, horacita);
-        stmt.setString(6, motivocita);
+        stmt.setString(4, id_clinica);
+        stmt.setDate(5, (java.sql.Date) fecha_cita);
+        stmt.setString(6, motivo);
         stmt.setString(7, estado_cita);
         
         stmt.execute();
@@ -167,7 +168,7 @@ public class Citas implements Operaciones{
     @Override
     public void seleccionar() throws SQLException {
         Connection conexion = instancia.getConnection();
-        String sql = "{call sp_ConsultarCitas}";
+        String sql = "{call sp_SeleccionarCitas}";
         try{
             CallableStatement stmt =conexion.prepareCall(sql);
             
@@ -179,18 +180,18 @@ public class Citas implements Operaciones{
 
         // Procesar los resultados
         while (rs.next()) {
-            String id_usuario = rs.getString("ID_USUARIO");
-            String id_medico = rs.getString("ID_MEDICO");
-            String fechacita = rs.getString("FECHA_CITA");
-            String horacita =rs.getString("HORA_CITA");
-            String motivocita =rs.getString("MOTIVO_CITA");
-            String estado_cita =rs.getString("ESTADO_CITA");
+            String id_usuario = rs.getString("id_usuario");
+            String id_medico = rs.getString("id_medico");
+            String id_clinica = rs.getString("id_clinica");
+            String fecha_cita =rs.getString("fecha_cita");
+            String motivo =rs.getString("motivo");
+            String estado_cita =rs.getString("estado");
 
             System.out.println("ID Usuario: " + id_usuario);
             System.out.println("Medico: " + id_medico);
-            System.out.println("Fecha de la cita: "+fechacita);
-            System.out.println("Hora de la cita: "+horacita);
-            System.out.println("Motivo de la cita: "+motivocita);
+            System.out.println("Clinica: "+id_clinica);
+            System.out.println("Fecha de la cita: "+fecha_cita);
+            System.out.println("Motivo de la cita: "+motivo);
             System.out.println("Estado de la cita: "+estado_cita);}
         }catch(Exception e){
             e.printStackTrace();
