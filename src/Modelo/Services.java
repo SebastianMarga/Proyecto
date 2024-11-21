@@ -15,7 +15,6 @@ import java.sql.SQLException;
 public class Services {
     private static Services instance;
     private Connection connection;
-    
     private String url = "jdbc:mysql://localhost:3306/SSE?useSSL=false&serverTimezone=UTC";
     private String username = "root";
     private String password = "";

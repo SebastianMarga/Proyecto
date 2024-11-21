@@ -8,18 +8,24 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author vsmv0
  */
-public class Citas implements Operaciones{
+public class Citas implements Operaciones, Cloneable{
+
+
+/**
+ *
+ * @author vsmv0
+ */
+
     private String id_cita;
-    private String id_usuario;
-    private String id_medico;
-    private String id_clinica;
+    private int id_usuario;
+    private int id_medico;
+    private int id_clinica;
     private  String fecha_cita;
     private String motivo;
     private String estado_cita;
@@ -43,27 +49,27 @@ public class Citas implements Operaciones{
         this.id_cita = id_cita;
     }
 
-    public String getId_usuario() {
+    public int getId_usuario() {
         return id_usuario;
     }
 
-    public void setId_usuario(String id_usuario) {
+    public void setId_usuario(int id_usuario) {
         this.id_usuario = id_usuario;
     }
 
-    public String getId_medico() {
+    public int getId_medico() {
         return id_medico;
     }
 
-    public void setId_medico(String id_medico) {
+    public void setId_medico(int id_medico) {
         this.id_medico = id_medico;
     }
 
-    public String getId_clinica() {
+    public int getId_clinica() {
         return id_clinica;
     }
 
-    public void setId_clinica(String id_clinica) {
+    public void setId_clinica(int id_clinica) {
         this.id_clinica = id_clinica;
     }
 
@@ -94,9 +100,9 @@ public class Citas implements Operaciones{
     //Ptron Builder
     public static class CitasBuilder{
         private String id_cita;
-        private String id_usuario;
-        private String id_medico;
-        private String id_clinica;
+        private int id_usuario;
+        private int id_medico;
+        private int id_clinica;
         private String fecha_cita;
         private String motivo;
         private String estado_cita;
@@ -104,15 +110,15 @@ public class Citas implements Operaciones{
        public CitasBuilder(String id_cita){
            this.id_cita=id_cita;
        }
-       public CitasBuilder Usuario(String id_usuario){
+       public CitasBuilder Usuario(int id_usuario){
            this.id_usuario=id_usuario;
            return this;
        }
-       public CitasBuilder Medico(String id_medico){
+       public CitasBuilder Medico(int id_medico){
            this.id_medico=id_medico;
            return this;
        }
-       public CitasBuilder Clinica(String id_clinica){
+       public CitasBuilder Clinica(int id_clinica){
            this.id_clinica=id_clinica;
            return this;
        }
@@ -146,18 +152,17 @@ public class Citas implements Operaciones{
     @Override
     public void insertar() throws SQLException {
         Connection conexion = instancia.getConnection();
-        String query = "{call sp_InsertarCita(?, ?, ?, ?, ?, ?, ?)}";
+        String query = "{call InsertarCita(?, ?, ?, ?, ?, ?)}";
         
         try {
             CallableStatement stmt = conexion.prepareCall(query);
             // Establecer los parámetros del procedimiento
-        stmt.setString(1, id_cita);
-        stmt.setString(2, id_usuario);
-        stmt.setString(3, id_medico);
-        stmt.setString(4, id_clinica);
-        stmt.setString(5,  fecha_cita);
-        stmt.setString(6, motivo);
-        stmt.setString(7, estado_cita);
+        stmt.setInt(1, id_usuario);
+        stmt.setInt(2, id_medico);
+        stmt.setInt(3, id_clinica);
+        stmt.setString(4,  fecha_cita);
+        stmt.setString(5, motivo);
+        stmt.setString(6, estado_cita);
         
         stmt.execute();
         } catch (Exception e) {
@@ -217,3 +222,5 @@ public class Citas implements Operaciones{
     
     
 }
+
+

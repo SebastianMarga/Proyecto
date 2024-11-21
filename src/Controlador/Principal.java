@@ -17,15 +17,20 @@ public class Principal {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException {
-       
+       try{
         Citas citas = new Citas.CitasBuilder("C001")
-                .Usuario("u001")
-                .Clinica("cl001")
-                .Fecha_cita("12/12/2024")
+                .Usuario(1)
+                .Clinica(1)
+                .Medico(1)
+                .Fecha_cita("2024/12/22")
                 .motivo("Dolor de Cabeza")
                 .estado("Confirmado")
                 .construir();
-                
+        citas.insertar();
+        } catch (SQLException ex) {
+            System.err.println("Error al procesar la cita: " + ex.getMessage());
+            ex.printStackTrace();
+        }    
     }
     
 }
