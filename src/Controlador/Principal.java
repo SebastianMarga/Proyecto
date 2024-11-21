@@ -18,7 +18,7 @@ public class Principal {
      */
     public static void main(String[] args) throws SQLException {
        try{
-        Citas citas = new Citas.CitasBuilder("C001")
+        Citas citas = new Citas.CitasBuilder(4)
                 .Usuario(1)
                 .Clinica(1)
                 .Medico(1)
@@ -27,6 +27,8 @@ public class Principal {
                 .estado("Confirmado")
                 .construir();
         citas.insertar();
+        citas.seleccionar();
+        citas.eliminar();
         } catch (SQLException ex) {
             System.err.println("Error al procesar la cita: " + ex.getMessage());
             ex.printStackTrace();

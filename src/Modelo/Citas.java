@@ -22,7 +22,7 @@ public class Citas implements Operaciones, Cloneable{
  * @author vsmv0
  */
 
-    private String id_cita;
+    private int id_cita;
     private int id_usuario;
     private int id_medico;
     private int id_clinica;
@@ -41,11 +41,11 @@ public class Citas implements Operaciones, Cloneable{
         this.estado_cita = builder.estado_cita;
     }
 
-    public String getId_cita() {
+    public int getId_cita() {
         return id_cita;
     }
 
-    public void setId_cita(String id_cita) {
+    public void setId_cita(int id_cita) {
         this.id_cita = id_cita;
     }
 
@@ -99,7 +99,7 @@ public class Citas implements Operaciones, Cloneable{
     
     //Ptron Builder
     public static class CitasBuilder{
-        private String id_cita;
+        private int id_cita;
         private int id_usuario;
         private int id_medico;
         private int id_clinica;
@@ -107,7 +107,7 @@ public class Citas implements Operaciones, Cloneable{
         private String motivo;
         private String estado_cita;
     
-       public CitasBuilder(String id_cita){
+       public CitasBuilder(int id_cita){
            this.id_cita=id_cita;
        }
        public CitasBuilder Usuario(int id_usuario){
@@ -173,21 +173,19 @@ public class Citas implements Operaciones, Cloneable{
     @Override
     public void seleccionar() throws SQLException {
         Connection conexion = instancia.getConnection();
-        String sql = "{call sp_SeleccionarCitas}";
+        String sql = "{call SeleccionarCitas}";
         try{
             CallableStatement stmt =conexion.prepareCall(sql);
             
-            // Asignar parámetro de entrada (ID del usuario a seleccionar)
-        stmt.setString(1, id_cita);
 
         // Ejecutar el procedimiento
          ResultSet rs = stmt.executeQuery();
 
         // Procesar los resultados
         while (rs.next()) {
-            String id_usuario = rs.getString("id_usuario");
-            String id_medico = rs.getString("id_medico");
-            String id_clinica = rs.getString("id_clinica");
+            String id_usuario = rs.getString("paciente_id");
+            String id_medico = rs.getString("doctor_id");
+            String id_clinica = rs.getString("clinica_id");
             String fecha_cita =rs.getString("fecha_cita");
             String motivo =rs.getString("motivo");
             String estado_cita =rs.getString("estado");
@@ -206,11 +204,11 @@ public class Citas implements Operaciones, Cloneable{
     @Override
     public void eliminar() throws SQLException {
          Connection conexion = instancia.getConnection();
-        String sql = "{call sp_EliminarCita(?)}";
+        String sql = "{call EliminarCita(?)}";
         try{
         CallableStatement stmt = conexion.prepareCall(sql);
         // Asignar parámetro de entrada (ID del usuario a eliminar)
-        stmt.setString(1, id_cita);
+        stmt.setInt(1, id_cita);
 
         // Ejecutar el procedimiento
         stmt.execute();

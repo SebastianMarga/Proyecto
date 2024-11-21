@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
  * @author vsmv0
  */
 public class Clinica implements Operaciones{
-    private String id_clinica;
+    private int id_clinica;
     private String nombre;
     private String direccion;
     private String telefono;
@@ -23,7 +23,7 @@ public class Clinica implements Operaciones{
     Services instancia=Services.getInstance();
 
 
-    public Clinica(String id_clinica, String nombre, String direccion, String telefono, String correo) throws SQLException {
+    public Clinica(int id_clinica, String nombre, String direccion, String telefono, String correo) throws SQLException {
         this.id_clinica = id_clinica;
         this.nombre = nombre;
         this.direccion = direccion;
@@ -31,11 +31,11 @@ public class Clinica implements Operaciones{
         this.correo = correo;
     }
 
-    public String getId_clinica() {
+    public int getId_clinica() {
         return id_clinica;
     }
 
-    public void setId_clinica(String id_clinica) {
+    public void setId_clinica(int id_clinica) {
         this.id_clinica = id_clinica;
     }
 
@@ -84,16 +84,15 @@ public class Clinica implements Operaciones{
     @Override
     public void insertar() throws SQLException {
         Connection conexion = instancia.getConnection();
-        String query = "{call sp_InsertarClinica(?, ?, ?, ?, ?)}";
+        String query = "{call InsertarClinica(?, ?, ?, ?)}";
         
         try {
             CallableStatement stmt = conexion.prepareCall(query);
             // Establecer los parámetros del procedimiento
-        stmt.setString(1, id_clinica);
-        stmt.setString(2, nombre);
-        stmt.setString(3, direccion);
-        stmt.setString(4, telefono);
-        stmt.setString(5, correo);
+        stmt.setString(1, nombre);
+        stmt.setString(2, direccion);
+        stmt.setString(3, telefono);
+        stmt.setString(4, correo);
         
         stmt.execute();
         } catch (Exception e) {
@@ -104,12 +103,9 @@ public class Clinica implements Operaciones{
     @Override
     public void seleccionar() throws SQLException {
         Connection conexion = instancia.getConnection();
-        String sql = "{call sp_ConsultarClinicas}";
+        String sql = "{call ConsultarClinicas}";
         try{
             CallableStatement stmt =conexion.prepareCall(sql);
-            
-            // Asignar parámetro de entrada (ID del usuario a seleccionar)
-        stmt.setString(1, id_clinica);
 
         // Ejecutar el procedimiento
          ResultSet rs = stmt.executeQuery();
@@ -133,11 +129,11 @@ public class Clinica implements Operaciones{
     @Override
     public void eliminar() throws SQLException {
 Connection conexion = instancia.getConnection();
-        String sql = "{call sp_EliminarServicioMedico(?)}";
+        String sql = "{call EliminarServicioMedico(?)}";
         try{
         CallableStatement stmt = conexion.prepareCall(sql);
         // Asignar parámetro de entrada (ID del usuario a eliminar)
-        stmt.setString(1, id_clinica);
+        stmt.setInt(1, id_clinica);
 
         // Ejecutar el procedimiento
         stmt.execute();
