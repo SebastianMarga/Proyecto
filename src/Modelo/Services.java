@@ -16,9 +16,9 @@ public class Services {
     private static Services instance;
     private Connection connection;
     
-    private String url = "jdbc:mysql://localhost:3306/tu_base_datos";
-    private String username = "Eliana";
-    private String password = "1234";
+    private String url = "jdbc:mysql://localhost:3306/SSE?useSSL=false&serverTimezone=UTC";
+    private String username = "root";
+    private String password = "";
     
     // Constructor privado para evitar la creación de más instancias
     private Services() throws SQLException {

@@ -20,7 +20,7 @@ public class Citas implements Operaciones{
     private String id_usuario;
     private String id_medico;
     private String id_clinica;
-    private Date fecha_cita;
+    private  String fecha_cita;
     private String motivo;
     private String estado_cita;
     Services instancia=Services.getInstance();
@@ -67,11 +67,11 @@ public class Citas implements Operaciones{
         this.id_clinica = id_clinica;
     }
 
-    public Date getFecha_Cita() {
+    public String getFecha_Cita() {
         return fecha_cita;
     }
 
-    public void setFecha_Cita(Date fecha_cita) {
+    public void setFecha_Cita(String fecha_cita) {
         this.fecha_cita = fecha_cita;
     }
 
@@ -97,7 +97,7 @@ public class Citas implements Operaciones{
         private String id_usuario;
         private String id_medico;
         private String id_clinica;
-        private Date fecha_cita;
+        private String fecha_cita;
         private String motivo;
         private String estado_cita;
     
@@ -116,7 +116,7 @@ public class Citas implements Operaciones{
            this.id_clinica=id_clinica;
            return this;
        }
-       public CitasBuilder Fecha_cita(Date fecha_cita){
+       public CitasBuilder Fecha_cita(String fecha_cita){
            this.fecha_cita=fecha_cita;
            return this;
        }
@@ -155,7 +155,7 @@ public class Citas implements Operaciones{
         stmt.setString(2, id_usuario);
         stmt.setString(3, id_medico);
         stmt.setString(4, id_clinica);
-        stmt.setDate(5, (java.sql.Date) fecha_cita);
+        stmt.setString(5,  fecha_cita);
         stmt.setString(6, motivo);
         stmt.setString(7, estado_cita);
         
