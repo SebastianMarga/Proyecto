@@ -114,9 +114,9 @@ public class Usuario implements Operaciones {
             // Establecer los parámetros del procedimiento
         stmt.setString(1, nombres);
         stmt.setString(2, apellidos);
-        stmt.setString(3, genero);
+        stmt.setString(3, fechaNacimiento);
         stmt.setString(4, genero);
-        stmt.setString(5, fechaNacimiento);
+        stmt.setString(5, telefono);
         stmt.setString(6, email);
         
         stmt.execute();

@@ -4,6 +4,10 @@
  */
 package Vista;
 
+import Modelo.Citas;
+import javax.swing.JOptionPane;
+import java.sql.*;
+
 /**
  *
  * @author vsmv0
@@ -39,6 +43,8 @@ public class ReservarCita extends javax.swing.JPanel {
         jTextField4 = new javax.swing.JTextField();
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -69,10 +75,70 @@ public class ReservarCita extends javax.swing.JPanel {
         add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(438, 131, 160, -1));
         add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(438, 266, 160, -1));
         add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(438, 381, 160, -1));
+
+        jButton1.setText("Reservar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 490, -1, 30));
+
+        jButton2.setText("Limpiar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 490, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jTextField4.setText("");
+        jTextField5.setText("");
+        jTextField6.setText("");
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+         // Obtener los datos de los campos de texto
+    int idUsuario = Integer.parseInt(jTextField1.getText());  // ID Usuario
+    int idMedico = Integer.parseInt(jTextField4.getText());   // ID Medico
+    int idClinica = Integer.parseInt(jTextField2.getText());  // ID Clinica
+    String fechaCita = jTextField5.getText();                  // Fecha Cita
+    String motivo = jTextField3.getText();                     // Motivo
+    String estadoCita = jTextField6.getText();                 // Estado Cita (por ejemplo, "pendiente")
+
+    try {
+        // Crear el objeto Citas usando el builder
+        Citas nuevaCita = new Citas.CitasBuilder(0)  // Suponiendo que el ID de la cita es autogenerado
+                .Usuario(idUsuario)
+                .Medico(idMedico)
+                .Clinica(idClinica)
+                .Fecha_cita(fechaCita)
+                .motivo(motivo)
+                .estado(estadoCita)
+                .construir();
+
+        // Llamar al método insertar de la clase Citas para guardar la cita
+        nuevaCita.insertar();
+
+        // Mostrar mensaje de éxito
+        JOptionPane.showMessageDialog(null, "Cita reservada con éxito.");
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error al reservar la cita: " + ex.getMessage());
+    }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

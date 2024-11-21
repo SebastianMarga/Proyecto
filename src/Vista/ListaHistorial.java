@@ -4,18 +4,62 @@
  */
 package Vista;
 
+import Modelo.Historial;
+import Modelo.Services;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 /**
  *
  * @author vsmv0
  */
 public class ListaHistorial extends javax.swing.JPanel {
 
+       
     /**
      * Creates new form ListaHistorial
      */
-    public ListaHistorial() {
+    public ListaHistorial() throws SQLException {
         initComponents();
     }
+    Services instancia=Services.getInstance();
+    public void seleccionar(DefaultTableModel model) throws SQLException {
+        
+    Connection conexion = instancia.getConnection();
+    String sql = "{call SeleccionarHistorialMedico}"; // Llama al procedimiento almacenado
+    try {
+        CallableStatement stmt = conexion.prepareCall(sql);
+
+        ResultSet rs = stmt.executeQuery();
+
+        // Limpiar la tabla antes de llenarla con nuevos datos
+        model.setRowCount(0);
+
+        // Procesar los resultados y agregar filas a la tabla
+        while (rs.next()) {
+            // Crear un vector con los valores de cada fila
+            Object[] row = {
+                rs.getInt("id_historial"),
+                rs.getInt("paciente_id"),
+                rs.getString("diagnostico"),
+                rs.getString("tratamiento"),
+                rs.getDate("fecha_registro")
+            };
+            model.addRow(row);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,6 +73,7 @@ public class ListaHistorial extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -49,11 +94,41 @@ public class ListaHistorial extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(29, 99, 729, -1));
+        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 729, -1));
+
+        jButton1.setText("Mostrar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 560, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+     // Crear el modelo de la tabla
+    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+
+        try {
+            // Crear una instancia de la clase Historial
+            Historial historial = new Historial.HistorialBuilder(0) // Usamos un ID genérico ya que se mostrará todo
+                    .construir();
+        } catch (SQLException ex) {
+            Logger.getLogger(ListaHistorial.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    try {
+        // Llamar al método seleccionar para cargar los datos en la tabla
+        seleccionar(model);
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Error al cargar los datos: " + e.getMessage());
+    }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

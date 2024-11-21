@@ -4,6 +4,10 @@
  */
 package Vista;
 
+import Modelo.Usuario;
+import javax.swing.JOptionPane;
+import java.sql.*;
+
 /**
  *
  * @author vsmv0
@@ -16,6 +20,7 @@ public class AgregarUsuario extends javax.swing.JPanel {
     public AgregarUsuario() {
         initComponents();
     }
+  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -33,12 +38,14 @@ public class AgregarUsuario extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        txtnombre = new javax.swing.JTextField();
+        txtape = new javax.swing.JTextField();
+        txtfecha = new javax.swing.JTextField();
+        txtgen = new javax.swing.JTextField();
+        txttel = new javax.swing.JTextField();
+        txtco = new javax.swing.JTextField();
+        btn = new javax.swing.JButton();
+        btn1 = new javax.swing.JButton();
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -63,16 +70,74 @@ public class AgregarUsuario extends javax.swing.JPanel {
 
         jLabel7.setText("Correo Electronico");
         add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(455, 256, -1, -1));
-        add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 180, -1));
-        add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 180, -1));
-        add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 290, 180, -1));
-        add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 100, 180, -1));
-        add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 190, 180, -1));
-        add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 290, 180, -1));
+        add(txtnombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 180, -1));
+
+        txtape.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtapeActionPerformed(evt);
+            }
+        });
+        add(txtape, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 180, -1));
+        add(txtfecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 290, 180, -1));
+        add(txtgen, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 100, 180, -1));
+        add(txttel, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 190, 180, -1));
+        add(txtco, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 290, 180, -1));
+
+        btn.setText("Agregar");
+        btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActionPerformed(evt);
+            }
+        });
+        add(btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 370, -1, -1));
+
+        btn1.setText("Limpiar");
+        btn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn1ActionPerformed(evt);
+            }
+        });
+        add(btn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 370, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActionPerformed
+        // Capturar los datos de los campos de texto
+        String nombre = txtnombre.getText();
+        String apellido = txtape.getText();
+        String fechaNacimiento = txtfecha.getText();
+        String genero = txtgen.getText();
+        String telefono = txttel.getText();
+        String email = txtco.getText();
+
+        // Crear el objeto Usuario y llamar al método insertar
+        try {
+            Usuario usuario = new Usuario(0, nombre, apellido, telefono, genero, fechaNacimiento, email);  // ID sería auto-generado en la base de datos
+            usuario.insertar();  // Llamada al método insertar de la clase Usuario
+            JOptionPane.showMessageDialog(this, "Usuario agregado correctamente.");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al agregar el usuario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnActionPerformed
+
+    private void btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1ActionPerformed
+        txtnombre.setText("");
+        txtape.setText("");
+        txtfecha.setText("");
+        txtgen.setText("");
+        txttel.setText("");
+        txtco.setText("");
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn1ActionPerformed
+
+    private void txtapeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtapeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtapeActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn;
+    private javax.swing.JButton btn1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -80,11 +145,11 @@ public class AgregarUsuario extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField txtape;
+    private javax.swing.JTextField txtco;
+    private javax.swing.JTextField txtfecha;
+    private javax.swing.JTextField txtgen;
+    private javax.swing.JTextField txtnombre;
+    private javax.swing.JTextField txttel;
     // End of variables declaration//GEN-END:variables
 }

@@ -4,6 +4,10 @@
  */
 package Vista;
 
+import Modelo.Doctor;
+import javax.swing.JOptionPane;
+import java.sql.*;
+
 /**
  *
  * @author vsmv0
@@ -37,6 +41,8 @@ public class AgregarDoctor extends javax.swing.JPanel {
         jTextField3 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
         jTextField5 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -63,10 +69,76 @@ public class AgregarDoctor extends javax.swing.JPanel {
         add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(53, 268, 188, -1));
         add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 268, 195, -1));
         add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(53, 404, 188, -1));
+
+        jButton1.setText("Agregar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 490, -1, -1));
+
+        jButton2.setText("Limpiar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 490, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jTextField4.setText("");
+        jTextField5.setText("");
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+     // Obtener los datos de los campos de texto
+    String nombre = jTextField1.getText();
+    String apellido = jTextField2.getText();
+    String especialidad = jTextField3.getText();
+    String telefono = jTextField4.getText();
+    String correo = jTextField5.getText();
+
+    // Verificar que todos los campos estén completos
+    if (nombre.isEmpty() || apellido.isEmpty() || especialidad.isEmpty() || telefono.isEmpty() || correo.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Error", JOptionPane.ERROR_MESSAGE);
+    } else {
+        // Crear un objeto Doctor con los datos
+        try {
+            // Crear un nuevo doctor, pasando 0 para el ID (esto lo manejará la base de datos)
+            Doctor doctor = new Doctor(0, nombre, apellido, especialidad, telefono, correo);
+            
+            // Insertar el nuevo doctor en la base de datos
+            doctor.insertar();
+            
+            // Mostrar mensaje de éxito
+            JOptionPane.showMessageDialog(this, "Doctor agregado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            
+            // Limpiar los campos después de insertar
+            jTextField1.setText("");
+            jTextField2.setText("");
+            jTextField3.setText("");
+            jTextField4.setText("");
+            jTextField5.setText("");
+
+        } catch (SQLException ex) {
+            // Si ocurre un error en la inserción, mostrar mensaje de error
+            JOptionPane.showMessageDialog(this, "Error al agregar el doctor: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

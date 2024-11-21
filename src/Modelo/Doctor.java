@@ -96,15 +96,16 @@ public class Doctor implements Operaciones{
     @Override
     public void insertar() throws SQLException {
 Connection conexion = instancia.getConnection();
-        String query = "{call InsertarDoctor(?, ?, ?, ?)}";
+        String query = "{call InsertarDoctor(?, ?, ?, ?,?)}";
         
         try {
             CallableStatement stmt = conexion.prepareCall(query);
             // Establecer los parámetros del procedimiento
         stmt.setString(1, nombre);
-        stmt.setString(2, especialidad);
-        stmt.setString(3, telefono);
-        stmt.setString(4, correo);
+        stmt.setString(2, apellido);
+        stmt.setString(3, especialidad);
+        stmt.setString(4, telefono);
+        stmt.setString(5, correo);
         
         stmt.execute();
         } catch (Exception e) {
