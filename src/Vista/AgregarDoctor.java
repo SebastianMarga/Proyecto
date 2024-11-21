@@ -97,40 +97,33 @@ jTextField1.setText("");
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-     // Obtener los datos de los campos de texto
-    String nombre = jTextField1.getText();
-    String apellido = jTextField2.getText();
-    String especialidad = jTextField3.getText();
-    String telefono = jTextField4.getText();
-    String correo = jTextField5.getText();
+     // Obtener los datos ingresados por el usuario en los campos de texto
+    String nombre = jTextField1.getText().trim();
+    String apellido = jTextField2.getText().trim();
+    String especialidad = jTextField3.getText().trim();
+    String telefono = jTextField4.getText().trim();
+    String correo = jTextField5.getText().trim();
 
-    // Verificar que todos los campos estén completos
+    // Validar que no haya campos vacíos
     if (nombre.isEmpty() || apellido.isEmpty() || especialidad.isEmpty() || telefono.isEmpty() || correo.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Error", JOptionPane.ERROR_MESSAGE);
-    } else {
-        // Crear un objeto Doctor con los datos
-        try {
-            // Crear un nuevo doctor, pasando 0 para el ID (esto lo manejará la base de datos)
-            Doctor doctor = new Doctor(0, nombre, apellido, especialidad, telefono, correo);
-            
-            // Insertar el nuevo doctor en la base de datos
-            doctor.insertar();
-            
-            // Mostrar mensaje de éxito
-            JOptionPane.showMessageDialog(this, "Doctor agregado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            
-            // Limpiar los campos después de insertar
-            jTextField1.setText("");
-            jTextField2.setText("");
-            jTextField3.setText("");
-            jTextField4.setText("");
-            jTextField5.setText("");
-
-        } catch (SQLException ex) {
-            // Si ocurre un error en la inserción, mostrar mensaje de error
-            JOptionPane.showMessageDialog(this, "Error al agregar el doctor: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
     }
+
+    try {
+        // Crear un nuevo objeto Doctor
+        Doctor doctor = new Doctor(0, nombre, apellido, especialidad, telefono, correo);
+        
+        // Llamar al método insertar
+        doctor.insertar();
+        
+        // Mostrar un mensaje de éxito
+        JOptionPane.showMessageDialog(this, "Doctor agregado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Error al agregar el doctor: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
 
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed

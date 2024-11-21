@@ -30,35 +30,9 @@ public class ListaHistorial extends javax.swing.JPanel {
     public ListaHistorial() throws SQLException {
         initComponents();
     }
-    Services instancia=Services.getInstance();
-    public void seleccionar(DefaultTableModel model) throws SQLException {
-        
-    Connection conexion = instancia.getConnection();
-    String sql = "{call SeleccionarHistorialMedico}"; // Llama al procedimiento almacenado
-    try {
-        CallableStatement stmt = conexion.prepareCall(sql);
+    
+    
 
-        ResultSet rs = stmt.executeQuery();
-
-        // Limpiar la tabla antes de llenarla con nuevos datos
-        model.setRowCount(0);
-
-        // Procesar los resultados y agregar filas a la tabla
-        while (rs.next()) {
-            // Crear un vector con los valores de cada fila
-            Object[] row = {
-                rs.getInt("id_historial"),
-                rs.getInt("paciente_id"),
-                rs.getString("diagnostico"),
-                rs.getString("tratamiento"),
-                rs.getDate("fecha_registro")
-            };
-            model.addRow(row);
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
 
 
     /**
@@ -105,24 +79,36 @@ public class ListaHistorial extends javax.swing.JPanel {
         add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 560, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-     // Crear el modelo de la tabla
-    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-
-        try {
-            // Crear una instancia de la clase Historial
-            Historial historial = new Historial.HistorialBuilder(0) // Usamos un ID genérico ya que se mostrará todo
-                    .construir();
-        } catch (SQLException ex) {
-            Logger.getLogger(ListaHistorial.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    model.setRowCount(0); // Limpiar las filas existentes en la tabla
 
     try {
-        // Llamar al método seleccionar para cargar los datos en la tabla
-        seleccionar(model);
+        // Crear una conexión y llamar al método seleccionar
+        Connection conexion = Services.getInstance().getConnection();
+        String sql = "{call SeleccionarHistorialMedico}";
+        CallableStatement stmt = conexion.prepareCall(sql);
+        
+        // Ejecutar el procedimiento almacenado
+        ResultSet rs = stmt.executeQuery();
+        
+        // Llenar la tabla con los datos del ResultSet
+        while (rs.next()) {
+            int idHistorial = rs.getInt("id");
+            int idPaciente = rs.getInt("paciente_id");
+            String diagnostico = rs.getString("diagnostico");
+            String tratamiento = rs.getString("tratamiento");
+            Date fechaRegistro = rs.getDate("fecha_registro");
+            
+            model.addRow(new Object[]{idHistorial, idPaciente, diagnostico, tratamiento, fechaRegistro});
+        }
+        
     } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Error al cargar los datos: " + e.getMessage());
-    }
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error al obtener los datos del historial médico: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    } 
+        
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
